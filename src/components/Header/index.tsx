@@ -1,3 +1,10 @@
+import { Container } from "./styles"
+import logo from '../../assets/logo.png'
+
 export const Header = () => {
-    return <h3>Header</h3>
+    return (
+        <Container>
+            <img src={logo} alt="logotipo" />
+        </Container>
+    )
 }
