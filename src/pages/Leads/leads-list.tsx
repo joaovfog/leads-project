@@ -19,16 +19,50 @@ import { Button, Card, Input } from "../../components"
 import { LeadsListProvider, useLeadsListContext } from "../context/leads-list.context"
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md"
 import { formatCPF } from "../../utils/formatCPF"
+import { useState } from "react"
 
 const LeadsTable = () => {
     const context = useLeadsListContext()
 
     if (!context) return <p>Context is not available</p>
 
-    const { data: leads, error, isLoading } = context
+    const { leads, error, isLoading } = context
 
     if (isLoading) return <p>Loading...</p>
     if (error) return <p>Error loading leads</p>
+
+    const [cpfFilter, setCpfFilter] = useState<string>("")
+    const [nameFilter, setNameFilter] = useState<string>("")
+    const [filteredLeads, setFilteredLeads] = useState(leads)
+
+    const handleFilter = () => {
+        const filters: { cpf?: string; nome?: string } = {}
+
+        if (cpfFilter) filters.cpf = cpfFilter.replace(/\D/g, "")
+        if (nameFilter) filters.nome = nameFilter
+
+        const newFilteredLeads = leads.filter((lead) => {
+            let matchesCPF = true
+            let matchesName = true
+
+            if (filters.cpf) {
+                matchesCPF = lead.cpf.includes(filters.cpf)
+            }
+            if (filters.nome) {
+                matchesName = lead.nome.toLowerCase().includes(filters.nome.toLowerCase())
+            }
+
+            return matchesCPF && matchesName
+        })
+
+        setFilteredLeads(newFilteredLeads)
+    }
+
+    const clearFilters = () => {
+        setCpfFilter("")
+        setNameFilter("")
+        setFilteredLeads(leads)
+    }
 
     return (
         <Container>
@@ -47,16 +81,20 @@ const LeadsTable = () => {
                                 label="CPF"
                                 placeholder="Digite o CPF do cliente"
                                 mask="999.999.999-99"
+                                value={cpfFilter}
+                                onChange={(e) => setCpfFilter(e.target.value)}
                             />
                             <Input 
                                 typeText="text" 
                                 label="Nome do cliente" 
                                 placeholder="Digite o nome do cliente"
+                                value={nameFilter}
+                                onChange={(e) => setNameFilter(e.target.value)}
                             />
                         </CardHeader>
                         <CardFooter>
-                            <Button variant="secondary">Limpar tudo</Button>
-                            <Button>Filtrar</Button>
+                            <Button variant="secondary" onClick={clearFilters}>Limpar tudo</Button>
+                            <Button onClick={handleFilter}>Filtrar</Button>
                         </CardFooter>
                     </Card>
                 </SecondRowHeader>
@@ -74,7 +112,7 @@ const LeadsTable = () => {
                             </TableRow>
                         </TableHeader>
                         <tbody>
-                            {leads.map((lead, index) => (
+                            {filteredLeads.map((lead, index) => (
                                 <TableRow key={lead.id} isEven={index % 2 === 0}>
                                     <TableCell>{lead.nome}</TableCell>
                                     <TableCell>{formatCPF(lead.cpf)}</TableCell>

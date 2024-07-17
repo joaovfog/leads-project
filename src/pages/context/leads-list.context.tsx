@@ -1,27 +1,44 @@
-import { useQuery } from "@tanstack/react-query";
-import { createContext, ReactNode, useContext } from "react";
-import { loadLeads } from "../../services/Leads/useLoadLeads";
-import { ILeads } from "../../interfaces/ILeads";
+import { createContext, ReactNode, useContext, useState, useEffect, useCallback } from "react"
+import { loadLeads } from "../../services/Leads/useLoadLeads"
+import { ILeads } from "../../interfaces/ILeads"
 
 const LeadsListContext = createContext<LeadsListContextType | null>(null)
 
 interface LeadsListProviderProps {
-    children: ReactNode;
+    children: ReactNode
 }
 
 interface LeadsListContextType {
-    data: ILeads[];
-    error: Error | null;
-    isLoading: boolean;
+    leads: ILeads[]
+    error: Error | null
+    isLoading: boolean
 }
 
 export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }: LeadsListProviderProps) => {
-    const { data, error, isLoading } = useQuery({ queryKey: ['leads'], queryFn: loadLeads })
+    const [leads, setLeads] = useState<ILeads[]>([])
+    const [error, setError] = useState<Error | null>(null)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    const fetchLeads = useCallback(async () => {
+        setIsLoading(true)
+    
+        try {
+          const data = await loadLeads();
+          setLeads(data)
+          setError(null)
+        } catch (error: any) {
+          setError(error)
+        } finally {
+          setIsLoading(false)
+        }
+      }, [])
+    
+      useEffect(() => {
+        fetchLeads()
+      }, [fetchLeads])
 
     return (
-        <LeadsListContext.Provider
-            value={{ data, error, isLoading }}
-        >
+        <LeadsListContext.Provider value={{ leads, error, isLoading }}>
             {children}
         </LeadsListContext.Provider>
     )
