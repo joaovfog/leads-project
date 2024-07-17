@@ -5,4 +5,5 @@ export interface ILeads {
     cpf: string
     estadoCivil: string
     nomeConjugue: string
+    telefone: string
 }

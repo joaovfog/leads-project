@@ -1,32 +1,48 @@
 import styled, { css } from "styled-components";
 
-const buttonStyles = {
-    primary: css`
-        background-color: #198CFF;
-        color: #fff;
-    `,
+export const StyledButton = styled.button<{ variant: 'primary' | 'secondary' | 'tertiary' }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 8px 16px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
 
-    secondary: css`
-        background-color: #fff;
-        color: #198CFF;
-    `,
-}
+    ${({ variant }) => 
+        variant === 'primary' && css`
+            border: 2px solid #198CFF;
+            background-color: #198CFF;
+            color: white;
 
-export const StyledButton = styled.button<{ variant: 'primary' | 'secondary' }>`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  border: 2px solid #198CFF;
-  border-radius: 4px;
-  cursor: pointer;
-  
-  ${({ variant }) => buttonStyles[variant]}
-  
-  &:hover {
-    opacity: 0.8;
-  }
+            &:hover {
+                border: 2px solid #126bc3;
+                background-color: #126bc3;
+            }
+        `
+    }
+
+    ${({ variant }) => 
+        variant === 'secondary' && css`
+            border: 2px solid #fff;
+            background-color: #fff;
+            color: #198CFF;
+
+            &:hover {
+                background-color: #f3f3f3;
+            }
+        `
+    }
+
+    ${({ variant }) => 
+        variant === 'tertiary' && css`
+            border: none;
+            background-color: transparent;
+            color: inherit;
+        `
+    }
 `
 
 export const IconWrapper = styled.div`

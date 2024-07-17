@@ -10,7 +10,7 @@ interface LeadsListProviderProps {
 }
 
 interface LeadsListContextType {
-    data: ILeads;
+    data: ILeads[];
     error: Error | null;
     isLoading: boolean;
 }

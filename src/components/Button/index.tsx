@@ -1,8 +1,8 @@
 import { IconWrapper, StyledButton } from "./styles";
 
 type ButtonProps = {
-    variant?: 'primary' | 'secondary';
-    children: React.ReactNode;
+    variant?: 'primary' | 'secondary' | 'tertiary'
+    children?: React.ReactNode;
     icon?: React.ReactNode
     onClick?: () => void;
 }

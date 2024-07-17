@@ -1,21 +1,34 @@
 import { FaPlus } from "react-icons/fa"
-import { CardFooter, CardHeader, Container, ContentContainer, FirstRowHeader, HeaderContainer, SecondRowHeader, Title } from "./styles"
-import { Button, Card, Input, Table } from "../../components"
+import { 
+    CardFooter, 
+    CardHeader, 
+    Container, 
+    ContentContainer, 
+    FirstRowHeader, 
+    HeaderContainer, 
+    SecondRowHeader, 
+    TableActions, 
+    TableCell, 
+    TableContainer, 
+    TableHeader, 
+    TableHeaderCell, 
+    TableRow, 
+    Title 
+} from "./styles"
+import { Button, Card, Input } from "../../components"
 import { LeadsListProvider, useLeadsListContext } from "../context/leads-list.context"
+import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md"
+import { formatCPF } from "../../utils/formatCPF"
 
 const LeadsTable = () => {
     const context = useLeadsListContext()
 
-    if (!context) {
-        return <p>Context is not available</p>;
-    }
-    
-    const { data, error, isLoading } = context;
+    if (!context) return <p>Context is not available</p>
 
-    if (isLoading) return <p>Loading...</p>;
-    if (error) return <p>Error loading leads</p>;
+    const { data: leads, error, isLoading } = context
 
-    console.log(data)
+    if (isLoading) return <p>Loading...</p>
+    if (error) return <p>Error loading leads</p>
 
     return (
         <Container>
@@ -41,7 +54,33 @@ const LeadsTable = () => {
             </HeaderContainer>
             <ContentContainer>
                 <Card>
-                    <Table data={[]} />
+                    <TableContainer>
+                        <TableHeader>
+                            <TableRow isEven={false}>
+                                <TableHeaderCell>Nome</TableHeaderCell>
+                                <TableHeaderCell>CPF</TableHeaderCell>
+                                <TableHeaderCell>E-mail</TableHeaderCell>
+                                <TableHeaderCell>Telefone</TableHeaderCell>
+                                <TableHeaderCell>Ações</TableHeaderCell>
+                            </TableRow>
+                        </TableHeader>
+                        <tbody>
+                            {leads.map((lead, index) => (
+                                <TableRow key={lead.id} isEven={index % 2 === 0}>
+                                    <TableCell>{lead.nome}</TableCell>
+                                    <TableCell>{formatCPF(lead.cpf)}</TableCell>
+                                    <TableCell>{lead.email}</TableCell>
+                                    <TableCell>{lead.telefone || "-"}</TableCell>
+                                    <TableCell>
+                                    <TableActions>
+                                        <Button icon={<MdOutlineEdit />} variant="tertiary" />
+                                        <Button icon={<MdDeleteOutline />} variant="tertiary" />
+                                    </TableActions>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </tbody>
+                    </TableContainer>
                 </Card>
             </ContentContainer>
         </Container>
