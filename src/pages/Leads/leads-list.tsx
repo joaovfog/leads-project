@@ -1,8 +1,22 @@
 import { FaPlus } from "react-icons/fa"
 import { CardFooter, CardHeader, Container, ContentContainer, FirstRowHeader, HeaderContainer, SecondRowHeader, Title } from "./styles"
 import { Button, Card, Input, Table } from "../../components"
+import { LeadsListProvider, useLeadsListContext } from "../context/leads-list.context"
 
-export const LeadsList = () => {
+const LeadsTable = () => {
+    const context = useLeadsListContext()
+
+    if (!context) {
+        return <p>Context is not available</p>;
+    }
+    
+    const { data, error, isLoading } = context;
+
+    if (isLoading) return <p>Loading...</p>;
+    if (error) return <p>Error loading leads</p>;
+
+    console.log(data)
+
     return (
         <Container>
             <HeaderContainer>
@@ -33,3 +47,9 @@ export const LeadsList = () => {
         </Container>
     )
 }
+
+export const LeadsListPage = () => (
+    <LeadsListProvider>
+        <LeadsTable />
+    </LeadsListProvider>
+)
