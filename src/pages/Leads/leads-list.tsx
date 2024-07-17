@@ -42,8 +42,17 @@ const LeadsTable = () => {
                 <SecondRowHeader>
                     <Card>
                         <CardHeader>
-                            <Input typeText="text" label="CPF" placeholder="Digite o CPF do cliente" />
-                            <Input typeText="text" label="Nome do cliente" placeholder="Digite o nome do cliente" />
+                            <Input 
+                                typeText="text" 
+                                label="CPF"
+                                placeholder="Digite o CPF do cliente"
+                                mask="999.999.999-99"
+                            />
+                            <Input 
+                                typeText="text" 
+                                label="Nome do cliente" 
+                                placeholder="Digite o nome do cliente"
+                            />
                         </CardHeader>
                         <CardFooter>
                             <Button variant="secondary">Limpar tudo</Button>
