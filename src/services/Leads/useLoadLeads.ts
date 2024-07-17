@@ -1,7 +1,11 @@
 import { axios } from "../../lib/axios"
 
 export const loadLeads = async () => {
-  const { data } = await axios.get('/leads')
+  try {
+    const response = await axios.get('/leads')
 
-  return data
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
 }
