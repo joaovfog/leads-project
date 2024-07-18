@@ -1,15 +1,14 @@
+import { ButtonHTMLAttributes } from "react";
 import { IconWrapper, StyledButton } from "./styles";
 
-type ButtonProps = {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
     variant?: 'primary' | 'secondary' | 'tertiary'
-    children?: React.ReactNode
     icon?: React.ReactNode
-    onClick?: () => void
 }
 
-export const Button = ({ variant = 'primary', children, icon, onClick }: ButtonProps) => {
+export const Button = ({ variant = 'primary', children, icon, ...rest }: ButtonProps) => {
     return (
-        <StyledButton variant={variant} onClick={onClick}>
+        <StyledButton variant={variant} {...rest}>
             {children}
             {icon && <IconWrapper>{icon}</IconWrapper>}
         </StyledButton>

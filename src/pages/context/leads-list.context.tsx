@@ -10,12 +10,15 @@ interface LeadsListProviderProps {
 
 interface LeadsListContextType {
     leads: ILeads[]
+    setLeads: any
+    initLeads: ILeads[]
     error: Error | null
     isLoading: boolean
 }
 
 export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }: LeadsListProviderProps) => {
     const [leads, setLeads] = useState<ILeads[]>([])
+    const [initLeads, setInitLeads] = useState<ILeads[]>([])
     const [error, setError] = useState<Error | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -23,7 +26,8 @@ export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }
         setIsLoading(true)
     
         try {
-          const data = await loadLeads();
+          const data = await loadLeads()
+          setInitLeads(data)
           setLeads(data)
           setError(null)
         } catch (error: any) {
@@ -38,7 +42,14 @@ export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }
       }, [fetchLeads])
 
     return (
-        <LeadsListContext.Provider value={{ leads, error, isLoading }}>
+        <LeadsListContext.Provider 
+          value={{ 
+            leads, 
+            setLeads,
+            initLeads,
+            error, 
+            isLoading
+          }}>
             {children}
         </LeadsListContext.Provider>
     )
