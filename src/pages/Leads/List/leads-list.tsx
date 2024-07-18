@@ -15,14 +15,20 @@ import {
     TableRow, 
     Title 
 } from "./styles"
-import { Button, Card, Input } from "../../components"
-import { LeadsListProvider, useLeadsListContext } from "../context/leads-list.context"
+import { Button, Card, Input } from "../../../components"
+import { LeadsListProvider, useLeadsListContext } from "../../context/leads-list.context"
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md"
-import { formatCPF } from "../../utils/formatCPF"
+import { formatCPF } from "../../../utils/formatCPF"
 import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { formatPhoneNumber } from "../../../utils/formatPhone"
 
 const LeadsTable = () => {
     const context = useLeadsListContext()
+    const navigate = useNavigate()
+
+    const [cpfFilter, setCpfFilter] = useState<string>("")
+    const [nameFilter, setNameFilter] = useState<string>("")
 
     if (!context) return <p>Context is not available</p>
 
@@ -33,12 +39,6 @@ const LeadsTable = () => {
         error, 
         isLoading 
     } = context
-
-    if (isLoading) return <p>Loading...</p>
-    if (error) return <p>Error loading leads</p>
-
-    const [cpfFilter, setCpfFilter] = useState<string>("")
-    const [nameFilter, setNameFilter] = useState<string>("")
 
     const handleFilter = () => {
         const filters: { cpf?: string; nome?: string } = {}
@@ -66,12 +66,19 @@ const LeadsTable = () => {
         setLeads(initLeads)
     }, [initLeads, setLeads])
 
+    if (isLoading) return <p>Loading...</p>
+    if (error) return <p>Error loading leads</p>
+
     return (
         <Container>
             <HeaderContainer>
                 <FirstRowHeader>
                     <Title>Consulta de Leads</Title>
-                    <Button variant="primary" icon={<FaPlus />}>
+                    <Button 
+                        variant="primary" 
+                        icon={<FaPlus />}
+                        onClick={() => navigate("/create")}
+                    >
                         Novo lead
                     </Button>
                 </FirstRowHeader>
@@ -119,7 +126,7 @@ const LeadsTable = () => {
                                     <TableCell>{lead.nome}</TableCell>
                                     <TableCell>{formatCPF(lead.cpf)}</TableCell>
                                     <TableCell>{lead.email}</TableCell>
-                                    <TableCell>{lead.telefone || "-"}</TableCell>
+                                    <TableCell>{formatPhoneNumber(lead.telefone) || "-"}</TableCell>
                                     <TableCell>
                                     <TableActions>
                                         <Button icon={<MdOutlineEdit />} variant="tertiary" />

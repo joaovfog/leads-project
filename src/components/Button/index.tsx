@@ -9,8 +9,8 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export const Button = ({ variant = 'primary', children, icon, ...rest }: ButtonProps) => {
     return (
         <StyledButton variant={variant} {...rest}>
-            {children}
             {icon && <IconWrapper>{icon}</IconWrapper>}
+            {children}
         </StyledButton>
     )
 }
