@@ -3,30 +3,15 @@ import styled from "styled-components";
 export const Container = styled.div`
   width: 100%;
   position: relative;
-
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  input {
-    margin-top: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: left;
-    border-color: #adb2a6bd;
-  }
 `
 
-export const Label = styled.label`
+export const Label = styled.p`
+  margin-bottom: 14px;
   font-weight: 600;
   color: #4D4F5C;
 `
 
-export const InputFieldContainer = styled.div`
-  position: relative;
-`
-
-export const InputField = styled.input<{ error?: boolean }>`
+export const SelectField = styled.select<{ error?: boolean }>`
   border-radius: 4px;
   color: #8c744f;
   display: block;
@@ -41,10 +26,6 @@ export const InputField = styled.input<{ error?: boolean }>`
   box-sizing: border-box;
 
   &:focus {
-    border-color: #DCE1E5;
-  }
-
-  &::placeholder {
-    color: #DCE1E5;
+    border-color: #dce1e5;
   }
 `

@@ -27,6 +27,7 @@ export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }
     
         try {
           const data = await loadLeads()
+
           setInitLeads(data)
           setLeads(data)
           setError(null)
@@ -35,11 +36,11 @@ export const LeadsListProvider: React.FC<LeadsListProviderProps> = ({ children }
         } finally {
           setIsLoading(false)
         }
-      }, [])
+    }, [])
     
-      useEffect(() => {
-        fetchLeads()
-      }, [fetchLeads])
+    useEffect(() => {
+      fetchLeads()
+    }, [fetchLeads])
 
     return (
         <LeadsListContext.Provider 

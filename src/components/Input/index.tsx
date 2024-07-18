@@ -3,17 +3,21 @@ import InputMask from 'react-input-mask';
 import { InputField, Label, Container, InputFieldContainer } from './styles';
 
 type InputProps = React.ComponentProps<'input'> & {
-  label: string;
-  placeholder: string;
-  typeText: 'text' | 'number';
-  mask?: string;
-};
+  label: string
+  placeholder: string
+  typeText: 'text' | 'number'
+  mask?: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+}
 
 export const Input: React.FC<InputProps> = ({
   label,
   placeholder = '',
   typeText,
   mask,
+  value,
+  onChange,
   ...props
 }: InputProps) => {
   const inputProps = {
@@ -21,17 +25,17 @@ export const Input: React.FC<InputProps> = ({
     id: label,
     placeholder,
     type: typeText,
-  };
+  }
 
   return (
     <Container>
-      <Label>{label}</Label>
+      <Label htmlFor={label}>{label}</Label>
       <div style={{ position: 'relative' }}>
         {mask ? (
           <InputMask
             mask={mask}
-            value={props.value}
-            onChange={props.onChange}
+            value={value}
+            onChange={onChange}
             {...inputProps}
           >
             {(inputProps: React.InputHTMLAttributes<HTMLInputElement>) => (
@@ -40,10 +44,14 @@ export const Input: React.FC<InputProps> = ({
           </InputMask>
         ) : (
           <InputFieldContainer>
-            <InputField {...inputProps} />
+            <InputField
+              {...inputProps}
+              value={value}
+              onChange={onChange}
+            />
           </InputFieldContainer>
         )}
       </div>
     </Container>
-  );
-};
+  )
+}
