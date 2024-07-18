@@ -19,21 +19,26 @@ import { Button, Card, Input } from "../../components"
 import { LeadsListProvider, useLeadsListContext } from "../context/leads-list.context"
 import { MdDeleteOutline, MdOutlineEdit } from "react-icons/md"
 import { formatCPF } from "../../utils/formatCPF"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 const LeadsTable = () => {
     const context = useLeadsListContext()
 
     if (!context) return <p>Context is not available</p>
 
-    const { leads, error, isLoading } = context
+    const { 
+        leads, 
+        setLeads,
+        initLeads,
+        error, 
+        isLoading 
+    } = context
 
     if (isLoading) return <p>Loading...</p>
     if (error) return <p>Error loading leads</p>
 
     const [cpfFilter, setCpfFilter] = useState<string>("")
     const [nameFilter, setNameFilter] = useState<string>("")
-    const [filteredLeads, setFilteredLeads] = useState(leads)
 
     const handleFilter = () => {
         const filters: { cpf?: string; nome?: string } = {}
@@ -41,28 +46,25 @@ const LeadsTable = () => {
         if (cpfFilter) filters.cpf = cpfFilter.replace(/\D/g, "")
         if (nameFilter) filters.nome = nameFilter
 
-        const newFilteredLeads = leads.filter((lead) => {
-            let matchesCPF = true
-            let matchesName = true
-
-            if (filters.cpf) {
-                matchesCPF = lead.cpf.includes(filters.cpf)
-            }
-            if (filters.nome) {
-                matchesName = lead.nome.toLowerCase().includes(filters.nome.toLowerCase())
-            }
-
+        const newFilteredLeads = initLeads.filter((lead) => {
+            const matchesCPF = filters.cpf ? lead.cpf.includes(filters.cpf) : true
+            const matchesName = filters.nome ? lead.nome.toLowerCase().includes(filters.nome.toLowerCase()) : true
+            
             return matchesCPF && matchesName
         })
 
-        setFilteredLeads(newFilteredLeads)
-    }
+        setLeads(newFilteredLeads)
+    };
 
     const clearFilters = () => {
         setCpfFilter("")
         setNameFilter("")
-        setFilteredLeads(leads)
+        setLeads(initLeads)
     }
+
+    useEffect(() => {
+        setLeads(initLeads)
+    }, [initLeads, setLeads])
 
     return (
         <Container>
@@ -112,7 +114,7 @@ const LeadsTable = () => {
                             </TableRow>
                         </TableHeader>
                         <tbody>
-                            {filteredLeads.map((lead, index) => (
+                            {leads.map((lead, index) => (
                                 <TableRow key={lead.id} isEven={index % 2 === 0}>
                                     <TableCell>{lead.nome}</TableCell>
                                     <TableCell>{formatCPF(lead.cpf)}</TableCell>
