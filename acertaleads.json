@@ -69,6 +69,15 @@
       "nomeConjuge": "",
       "email": "email@hotmail.com",
       "telefone": "12891382998"
+    },
+    {
+      "id": "b2c7",
+      "cpf": "04251267060",
+      "nome": "João Vitor",
+      "nomeEstadoCivil": "Solteiro(a)",
+      "nomeConjuge": "",
+      "email": "joao@gmail.com",
+      "telefone": "55991095535"
     }
   ],
   "tiposEstadoCivil": [
