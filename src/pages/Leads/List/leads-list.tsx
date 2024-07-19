@@ -23,6 +23,8 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatPhoneNumber } from '../../../utils/formatPhone'
 import { ILeads } from '../../../interfaces/ILeads'
+import { deleteLead } from '../../../services/Leads/useDeleteLead'
+import { toast } from 'react-toastify'
 
 export const LeadsListPage = () => {
   const context = useLeadsContext()
@@ -65,6 +67,22 @@ export const LeadsListPage = () => {
     setSelectedLead(lead)
     setCurrentStep(1)
     navigate(`/edit/${lead.id}`)
+  }
+
+  const handleDelete = async (lead: ILeads) => {
+    const confirmed = window.confirm(`Tem certeza que deseja excluir o lead ${lead.nome}?`)
+
+    if (confirmed) {
+      try {
+        await deleteLead(lead.id)
+  
+        toast.success('Lead excluído com sucesso!')
+  
+        setLeads((prevLeads: any) => prevLeads.filter((l: any) => l.id !== lead.id))
+      } catch (error) {
+        toast.error('Algo deu errado!')
+      }
+    }
   }
 
   const clearFilters = () => {
@@ -153,7 +171,11 @@ export const LeadsListPage = () => {
                         variant="tertiary"
                         onClick={() => handleEdit(lead)}
                       />
-                      <Button icon={<MdDeleteOutline />} variant="tertiary" />
+                      <Button
+                        icon={<MdDeleteOutline />}
+                        variant="tertiary"
+                        onClick={() => handleDelete(lead)}
+                      />
                     </TableActions>
                   </TableCell>
                 </TableRow>
