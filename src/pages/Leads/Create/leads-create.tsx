@@ -16,7 +16,7 @@ interface FormData {
     cpf: string
     nome: string
     nomeEstadoCivil: string
-    nomeConjugue: string
+    nomeConjuge: string
     email: string
     telefone: string
 }
@@ -25,13 +25,20 @@ const validationSchemaStep1 = Yup.object().shape({
     cpf: Yup.string().required("CPF é obrigatório"),
     nome: Yup.string().required("Nome do cliente é obrigatório"),
     nomeEstadoCivil: Yup.string().required("Estado civil é obrigatório"),
+    nomeConjuge: Yup.string().when('nomeEstadoCivil', {
+        is: (value: string) => {
+            return value === 'Casado(a)'
+        },
+        then: (s) => s.required("Nome do cônjuge é obrigatório"),
+        otherwise: (s) => s,
+    }),
 })
 
 const validationSchemaStep2 = Yup.object().shape({
     email: Yup.string()
         .email("E-mail inválido")
         .required("E-mail é obrigatório"),
-    telefone: Yup.string(),
+    telefone: Yup.string().required("Telefone é um campo obrigatório"),
 })
 
 export const CreateLeadsPage = () => {
@@ -40,6 +47,8 @@ export const CreateLeadsPage = () => {
     const [currentStep, setCurrentStep] = useState<number>(1)
     const [maritalStatus, setMaritalStatus] = useState<IMaritalStatus[]>([])
     const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [triedToAdvance, setTriedToAdvance] = useState(false)
+    const [showStepTwoErrors, setShowStepTwoErrors] = useState(false)
 
     const handleSubmit = async (values: FormData, actions: FormikHelpers<FormData>) => {
         try {
@@ -66,20 +75,17 @@ export const CreateLeadsPage = () => {
     }
 
     const handleNextStep = async (validateForm: () => Promise<any>) => {
-        if (currentStep === 1) {
-            const errors = await validateForm()
+        setTriedToAdvance(true);
 
-            console.log(errors)
-
-            if (Object.keys(errors).length === 0) {
-                setCurrentStep(2)
-            } else {
-                console.log(`erro no step: ${currentStep}`)
-            }
-        } else {
+        const errors = await validateForm()
+    
+        if (Object.keys(errors).length === 0) {
             setCurrentStep(2)
+        } else {
+            console.log(`erro no step: ${currentStep}`)
         }
     }
+    
 
     const fetchMaritalStatus = useCallback(async () => {
         setIsLoading(true)
@@ -154,34 +160,30 @@ export const CreateLeadsPage = () => {
                             initialValues={{
                                 cpf: "",
                                 nome: "",
-                                nomeEstadoCivil:
-                                maritalStatus.length > 0
-                                  ? maritalStatus[0].nomeEstadoCivil
-                                  : '',
-                                nomeConjugue: "",
+                                nomeEstadoCivil: "Solteiro(a)",
+                                nomeConjuge: "",
                                 email: "",
                                 telefone: "",
                             }}
                             validationSchema={getValidationSchema(currentStep)}
                             onSubmit={handleSubmit}
                         >
-                            {({ values, handleChange, handleBlur, touched, errors, validateForm }) => (
+                            {({ values, handleChange, handleBlur, errors, validateForm }) => (
                                 <Form className="form">
                                     {currentStep === 1 ? (
                                         <StepOneComponent 
                                             values={values}
                                             handleChange={handleChange}
                                             handleBlur={handleBlur}
-                                            touched={touched}
                                             errors={errors}
                                             maritalStatus={maritalStatus}
+                                            triedToAdvance={triedToAdvance}
                                         />                                       
                                     ) : (
                                         <StepTwoComponent
                                             values={values}
                                             handleChange={handleChange}
                                             handleBlur={handleBlur}
-                                            touched={touched}
                                             errors={errors}
                                         />                                        
                                     )}
@@ -195,7 +197,12 @@ export const CreateLeadsPage = () => {
                                             Cancelar
                                         </Button>
                                         {currentStep === 1 ? (
-                                            <Button type="button" onClick={() => handleNextStep(validateForm)}>Avançar</Button>
+                                            <Button 
+                                                type="button" 
+                                                onClick={() => handleNextStep(validateForm)}
+                                            >
+                                                Avançar
+                                            </Button>
                                         ) : (
                                             <Button type="submit">Cadastrar</Button>
                                         )}
