@@ -1,9 +1,9 @@
 export interface ILeads {
-    id: number
+    id: string
     nome: string
     email: string
     cpf: string
-    estadoCivil: string
-    nomeConjugue: string
+    nomeEstadoCivil: string
+    nomeConjuge: string
     telefone: string
 }

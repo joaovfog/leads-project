@@ -22,6 +22,7 @@ import { formatCPF } from '../../../utils/formatCPF'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { formatPhoneNumber } from '../../../utils/formatPhone'
+import { ILeads } from '../../../interfaces/ILeads'
 
 export const LeadsListPage = () => {
   const context = useLeadsContext()
@@ -32,7 +33,15 @@ export const LeadsListPage = () => {
 
   if (!context) return <p>Context is not available</p>
 
-  const { leads, setLeads, initLeads, error, isLoading } = context
+  const {
+    leads,
+    setLeads,
+    initLeads,
+    setSelectedLead,
+    error,
+    isLoading,
+    setCurrentStep,
+  } = context
 
   const handleFilter = () => {
     const filters: { cpf?: string; nome?: string } = {}
@@ -50,6 +59,12 @@ export const LeadsListPage = () => {
     })
 
     setLeads(newFilteredLeads)
+  }
+
+  const handleEdit = (lead: ILeads) => {
+    setSelectedLead(lead)
+    setCurrentStep(1)
+    navigate(`/edit/${lead.id}`)
   }
 
   const clearFilters = () => {
@@ -73,7 +88,11 @@ export const LeadsListPage = () => {
           <Button
             variant="primary"
             icon={<FaPlus />}
-            onClick={() => navigate('/create')}
+            onClick={() => {
+              setSelectedLead(null)
+              setCurrentStep(1)
+              navigate('/create')
+            }}
           >
             Novo lead
           </Button>
@@ -129,7 +148,11 @@ export const LeadsListPage = () => {
                   </TableCell>
                   <TableCell>
                     <TableActions>
-                      <Button icon={<MdOutlineEdit />} variant="tertiary" />
+                      <Button
+                        icon={<MdOutlineEdit />}
+                        variant="tertiary"
+                        onClick={() => handleEdit(lead)}
+                      />
                       <Button icon={<MdDeleteOutline />} variant="tertiary" />
                     </TableActions>
                   </TableCell>
