@@ -43,6 +43,16 @@ export const StyledButton = styled.button<{ variant: 'primary' | 'secondary' | '
             color: inherit;
         `
     }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+        
+        &:hover {
+            background-color: #198CFF;
+            border: 2px solid #198CFF;
+        }
+    }
 `
 
 export const IconWrapper = styled.div`

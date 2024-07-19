@@ -51,6 +51,24 @@
       "nomeConjugue": "Testa",
       "email": "teste@gmail.com",
       "telefone": "56454656456"
+    },
+    {
+      "id": "a0dd",
+      "cpf": "12345678909",
+      "nome": "Álvaro",
+      "nomeEstadoCivil": "Solteiro(a)",
+      "nomeConjuge": "",
+      "email": "email@gmail.com",
+      "telefone": "44444444444"
+    },
+    {
+      "id": "89c9",
+      "cpf": "77777777777",
+      "nome": "teste",
+      "nomeEstadoCivil": "Solteiro(a)",
+      "nomeConjuge": "",
+      "email": "email@hotmail.com",
+      "telefone": "12891382998"
     }
   ],
   "tiposEstadoCivil": [

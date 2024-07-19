@@ -7,23 +7,25 @@ type StepOneProps = {
         cpf: string
         nome: string
         nomeEstadoCivil: string
-        nomeConjugue: string
+        nomeConjuge: string
     }
-    touched: any
     errors: any
     maritalStatus: IMaritalStatus[]
     handleChange: any
     handleBlur: any
+    triedToAdvance: boolean
 }
 
 export const StepOneComponent = ({ 
     values,
     handleChange, 
     handleBlur,
-    touched,
     errors,
     maritalStatus,
+    triedToAdvance,
 }: StepOneProps) => {
+    const isMarried = values.nomeEstadoCivil === "Casado(a)"
+
     return (
         <>
             <InputField>
@@ -38,7 +40,7 @@ export const StepOneComponent = ({
                     onChange={handleChange}
                     onBlur={handleBlur}
                 />
-                {touched.cpf || errors.cpf ? <ErrorMessage>{errors.cpf}</ErrorMessage> : null}
+                {triedToAdvance && errors.cpf ? <ErrorMessage>{errors.cpf}</ErrorMessage> : null}
             </InputField>
             <InputField>
                 <Input 
@@ -51,7 +53,7 @@ export const StepOneComponent = ({
                     onChange={handleChange}
                     onBlur={handleBlur}
                 />
-                {touched.nome || errors.nome ? <ErrorMessage>{errors.nome}</ErrorMessage> : null}
+                {triedToAdvance && errors.nome ? <ErrorMessage>{errors.nome}</ErrorMessage> : null}
             </InputField> 
             <InputField>                                    
                 <Select
@@ -62,22 +64,26 @@ export const StepOneComponent = ({
                     }))}
                     id="nomeEstadoCivil"
                     name="nomeEstadoCivil"
-                    value={values.nomeEstadoCivil}
+                    value={values.nomeEstadoCivil  || "Solteiro(a)"}
                     onChange={handleChange}
                     onBlur={handleBlur}
                 />
-                {touched.nomeEstadoCivil || errors.nomeEstadoCivil ? <ErrorMessage>{errors.nomeEstadoCivil}</ErrorMessage> : null}
-            </InputField> 
-            <Input 
-                typeText="text" 
-                label="Nome do cônjuge" 
-                placeholder="Digite o nome do cônjuge"
-                id="nomeConjugue"
-                name="nomeConjugue"
-                value={values.nomeConjugue}
-                onChange={handleChange}
-                onBlur={handleBlur}
-            />
+                {triedToAdvance && errors.nomeEstadoCivil ? <ErrorMessage>{errors.nomeEstadoCivil}</ErrorMessage> : null}
+            </InputField>
+            <InputField>
+                <Input 
+                    typeText="text" 
+                    label="Nome do cônjuge" 
+                    placeholder="Digite o nome do cônjuge"
+                    id="nomeConjuge"
+                    name="nomeConjuge"
+                    value={values.nomeConjuge}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    disabled={!isMarried}
+                />
+                {triedToAdvance && errors.nomeConjuge ? <ErrorMessage>{errors.nomeConjuge}</ErrorMessage> : null}
+            </InputField>
         </>
     )
 }

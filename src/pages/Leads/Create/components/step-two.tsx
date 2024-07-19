@@ -6,15 +6,13 @@ type StepTwoProps = {
         email: string
         telefone: string
     }
-    touched: any
     errors: any
-    handleChange: any
-    handleBlur: any
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+    handleBlur: (e: React.FocusEvent<HTMLInputElement, Element>) => void
 }
 
 export const StepTwoComponent = ({
     values, 
-    touched, 
     errors, 
     handleChange, 
     handleBlur 
@@ -32,19 +30,22 @@ export const StepTwoComponent = ({
                     onChange={handleChange}
                     onBlur={handleBlur}
                 />
-                {touched.email || errors.email ? <ErrorMessage>{errors.email}</ErrorMessage> : null}
+                {errors.email ? <ErrorMessage>{errors.email}</ErrorMessage> : null}
             </InputField>
-            <Input 
-                typeText="text" 
-                label="Telefone" 
-                placeholder="Digite o telefone do cliente"
-                mask="(99) 9 9999-9999"
-                id="telefone"
-                name="telefone"
-                value={values.telefone}
-                onChange={handleChange}
-                onBlur={handleBlur}
-            />
+            <InputField>
+                <Input 
+                    typeText="text" 
+                    label="Telefone" 
+                    placeholder="Digite o telefone do cliente"
+                    mask="(99) 9 9999-9999"
+                    id="telefone"
+                    name="telefone"
+                    value={values.telefone}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                />
+                {errors.telefone ? <ErrorMessage>{errors.telefone}</ErrorMessage> : null}
+            </InputField>
         </>
     )
 }
