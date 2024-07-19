@@ -25,12 +25,11 @@ import { Form, Formik } from 'formik'
 import { useCallback, useEffect, useState } from 'react'
 import { IMaritalStatus } from '../../../interfaces/IMaritalStatus'
 import { loadMaritalStatus } from '../../../services/Leads/useLoadMaritalStatus'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import { StepOneComponent } from './components/step-one'
 import { StepTwoComponent } from './components/step-two'
 import { useLeadsContext } from '../../context/leads.context'
-
 
 const validationSchemaStep1 = Yup.object().shape({
   cpf: Yup.string().required('CPF é obrigatório'),
@@ -38,7 +37,7 @@ const validationSchemaStep1 = Yup.object().shape({
   nomeEstadoCivil: Yup.string().required('Estado civil é obrigatório'),
   nomeConjuge: Yup.string().when('nomeEstadoCivil', {
     is: (value: string) => {
-      return value === 'Casado(a)'
+      return value === '8f38'
     },
     then: (s) => s.required('Nome do cônjuge é obrigatório'),
     otherwise: (s) => s,
@@ -50,22 +49,33 @@ const validationSchemaStep2 = Yup.object().shape({
   telefone: Yup.string().required('Telefone é um campo obrigatório'),
 })
 
-export const CreateLeadsPage = () => {
+export const RegisterLeadsPage = () => {
+  const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-
   const context = useLeadsContext()
 
   const [maritalStatus, setMaritalStatus] = useState<IMaritalStatus[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [triedToAdvance, setTriedToAdvance] = useState(false)
 
+  const [validateAfterSubmit, setValidateAfterSubmit] = useState(false)
+
   if (!context) return <p>Context is not available</p>
 
-  const { currentStep, setCurrentStep, leadData, setLeadData, handleSubmit, error } = context
+  const {
+    currentStep,
+    setCurrentStep,
+    leadData,
+    setLeadData,
+    selectedLead,
+    setSelectedLead,
+    handleSubmit,
+    error,
+    fetchLeadById,
+  } = context
 
-  const getValidationSchema = (step: number) => {
-    return step === 1 ? validationSchemaStep1 : validationSchemaStep2
-  }
+  const getValidationSchema = (step: number) =>
+    step === 1 ? validationSchemaStep1 : validationSchemaStep2
 
   const handleNextStep = async (validateForm: () => Promise<any>) => {
     setTriedToAdvance(true)
@@ -74,17 +84,16 @@ export const CreateLeadsPage = () => {
 
     if (Object.keys(errors).length === 0) {
       setCurrentStep(2)
+      setTriedToAdvance(false)
     } else {
-      console.log(`erro no step: ${currentStep}`)
+      console.log(`Erro no step: ${currentStep}`)
     }
   }
 
   const fetchMaritalStatus = useCallback(async () => {
     setIsLoading(true)
-
     try {
       const data = await loadMaritalStatus()
-
       setMaritalStatus(data)
     } catch (error) {
       console.log(error)
@@ -93,31 +102,64 @@ export const CreateLeadsPage = () => {
     }
   }, [])
 
+  const handleBack = () => {
+    if (currentStep === 1) {
+      setCurrentStep(0)
+      setSelectedLead(null)
+      setLeadData({
+        cpf: '',
+        nome: '',
+        nomeEstadoCivil: 'Solteiro(a)',
+        nomeConjuge: '',
+        email: '',
+        telefone: '',
+      })
+      navigate('/')
+    } else if (currentStep === 2) {
+      setCurrentStep(1)
+    }
+  }
+
   useEffect(() => {
     fetchMaritalStatus()
   }, [fetchMaritalStatus])
+
+  useEffect(() => {
+    if (id) {
+      fetchLeadById(id)
+    }
+  }, [id, fetchLeadById])
+
+  useEffect(() => {
+    if (selectedLead) {
+      setLeadData({
+        cpf: selectedLead.cpf,
+        nome: selectedLead.nome,
+        nomeEstadoCivil: selectedLead.nomeEstadoCivil,
+        nomeConjuge: selectedLead.nomeConjuge,
+        email: selectedLead.email,
+        telefone: selectedLead.telefone,
+      })
+    }
+  }, [selectedLead, setLeadData])
 
   if (isLoading) return <p>Loading...</p>
   if (error) return <p>Error loading leads</p>
 
   return (
     <Container>
-      <Title>Consulta de Leads</Title>
+      <Title>{selectedLead ? 'Editar Lead' : 'Novo Lead'}</Title>
       <ContentContainer>
         <Card>
-          <Button
-            variant="tertiary"
-            icon={<MdOutlineArrowBack size={20} />}
-            onClick={() => {
-              if (currentStep === 2) {
-                return setCurrentStep(1)
-              }
-
-              navigate('/')
-            }}
-          >
-            Voltar
-          </Button>
+          {currentStep !== 0 && (
+            <Button
+              variant="tertiary"
+              icon={<MdOutlineArrowBack size={20} />}
+              onClick={handleBack}
+            >
+              Voltar
+            </Button>
+          )}
           <CardHeader>
             <StepOne>
               <OuterBall isActive={currentStep === 1}>
@@ -158,16 +200,11 @@ export const CreateLeadsPage = () => {
               )}
             </CardContentHeader>
             <Formik
-              initialValues={{
-                cpf: '',
-                nome: '',
-                nomeEstadoCivil: 'Solteiro(a)',
-                nomeConjuge: '',
-                email: '',
-                telefone: '',
-              }}
+              initialValues={leadData}
               validationSchema={getValidationSchema(currentStep)}
               onSubmit={handleSubmit}
+              validateOnChange={validateAfterSubmit}
+              validateOnBlur={false}
             >
               {({ values, handleChange, handleBlur, errors, validateForm }) => (
                 <Form className="form">
@@ -205,7 +242,18 @@ export const CreateLeadsPage = () => {
                         Avançar
                       </Button>
                     ) : (
-                      <Button type="submit">Cadastrar</Button>
+                      <Button type="button" onClick={async () => {
+                        setValidateAfterSubmit(true)
+                        const error = await validateForm()
+
+                        if (Object.keys(error).length === 0) {
+                          handleSubmit(values, validateForm)
+                        } else {
+                          console.log(`Erro no step: ${currentStep}`)
+                        }
+                      }}>
+                        {selectedLead ? 'Salvar' : 'Cadastrar'}
+                      </Button>
                     )}
                   </FormFooter>
                 </Form>

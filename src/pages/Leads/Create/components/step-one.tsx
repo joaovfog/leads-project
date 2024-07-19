@@ -24,7 +24,7 @@ export const StepOneComponent = ({
   maritalStatus,
   triedToAdvance,
 }: StepOneProps) => {
-  const isMarried = values.nomeEstadoCivil === 'Casado(a)'
+  const isMarried = values.nomeEstadoCivil === '8f38'
 
   return (
     <>
@@ -63,12 +63,12 @@ export const StepOneComponent = ({
         <Select
           label="Estado civil"
           options={maritalStatus.map((status) => ({
-            id: status.nomeEstadoCivil,
+            id: status.id,
             nomeEstadoCivil: status.nomeEstadoCivil,
           }))}
           id="nomeEstadoCivil"
           name="nomeEstadoCivil"
-          value={values.nomeEstadoCivil || 'Solteiro(a)'}
+          value={values.nomeEstadoCivil}
           onChange={handleChange}
           onBlur={handleBlur}
         />

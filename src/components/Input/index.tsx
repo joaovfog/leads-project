@@ -8,7 +8,7 @@ type InputProps = React.ComponentProps<'input'> & {
   typeText: 'text' | 'number'
   mask?: string
   value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
 export const Input: React.FC<InputProps> = ({
