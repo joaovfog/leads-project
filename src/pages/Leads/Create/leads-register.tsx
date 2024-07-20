@@ -5,6 +5,7 @@ import {
 } from 'react-icons/md'
 import { Button, Card } from '../../../components'
 import {
+  BackTitle,
   CardContent,
   CardContentHeader,
   CardContentTitle,
@@ -92,8 +93,10 @@ export const RegisterLeadsPage = () => {
 
   const fetchMaritalStatus = useCallback(async () => {
     setIsLoading(true)
+
     try {
       const data = await loadMaritalStatus()
+
       setMaritalStatus(data)
     } catch (error) {
       console.log(error)
@@ -148,18 +151,18 @@ export const RegisterLeadsPage = () => {
 
   return (
     <Container>
-      <Title>{selectedLead ? 'Editar Lead' : 'Novo Lead'}</Title>
+      <BackTitle>
+        {currentStep !== 0 && (
+          <Button
+            variant="tertiary"
+            icon={<MdOutlineArrowBack size={20} />}
+            onClick={handleBack}
+          />
+        )}
+        <Title>{selectedLead ? 'Editar Lead' : 'Novo Lead'}</Title>
+      </BackTitle>
       <ContentContainer>
         <Card>
-          {currentStep !== 0 && (
-            <Button
-              variant="tertiary"
-              icon={<MdOutlineArrowBack size={20} />}
-              onClick={handleBack}
-            >
-              Voltar
-            </Button>
-          )}
           <CardHeader>
             <StepOne>
               <OuterBall isActive={currentStep === 1}>
@@ -230,7 +233,17 @@ export const RegisterLeadsPage = () => {
                     <Button
                       type="button"
                       variant="secondary"
-                      onClick={() => navigate('/')}
+                      onClick={() => {
+                        setLeadData({
+                          cpf: '',
+                          nome: '',
+                          nomeEstadoCivil: 'Solteiro(a)',
+                          nomeConjuge: '',
+                          email: '',
+                          telefone: '',
+                        })
+                        navigate('/')
+                      }}
                     >
                       Cancelar
                     </Button>
@@ -242,16 +255,19 @@ export const RegisterLeadsPage = () => {
                         Avançar
                       </Button>
                     ) : (
-                      <Button type="button" onClick={async () => {
-                        setValidateAfterSubmit(true)
-                        const error = await validateForm()
+                      <Button
+                        type="button"
+                        onClick={async () => {
+                          setValidateAfterSubmit(true)
+                          const error = await validateForm()
 
-                        if (Object.keys(error).length === 0) {
-                          handleSubmit(values, validateForm)
-                        } else {
-                          console.log(`Erro no step: ${currentStep}`)
-                        }
-                      }}>
+                          if (Object.keys(error).length === 0) {
+                            handleSubmit(values, validateForm)
+                          } else {
+                            console.log(`Erro no step: ${currentStep}`)
+                          }
+                        }}
+                      >
                         {selectedLead ? 'Salvar' : 'Cadastrar'}
                       </Button>
                     )}

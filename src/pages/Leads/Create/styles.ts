@@ -8,6 +8,11 @@ export const Title = styled.p`
   color: #252433;
 `
 
+export const BackTitle = styled.div`
+  display: flex;
+  align-items: center;
+`
+
 export const ContentContainer = styled.div`
     margin-top: 30px;
 `

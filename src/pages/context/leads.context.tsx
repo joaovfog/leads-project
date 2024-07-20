@@ -54,9 +54,16 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({
   const [leads, setLeads] = useState<ILeads[]>([])
   const [initLeads, setInitLeads] = useState<ILeads[]>([])
   const [selectedLead, setSelectedLead] = useState<ILeads | null>(null)
+
   const [error, setError] = useState<Error | null>(null)
+
   const [isLoading, setIsLoading] = useState<boolean>(false)
+
   const [currentStep, setCurrentStep] = useState<number>(0)
+
+  const [page, setPage] = useState<number>(1)
+  const [totalPages, setTotalPages] = useState<number>(1)
+  const itemsPerPage = 5
 
   const [leadData, setLeadData] = useState<FormData>({
     cpf: '',
@@ -67,7 +74,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({
     telefone: '',
   })
 
-  const fetchLeads = useCallback(async () => {
+  const fetchLeads = useCallback(async (page = 1, limit = itemsPerPage) => {
     setIsLoading(true)
 
     try {

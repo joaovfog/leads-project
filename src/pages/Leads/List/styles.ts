@@ -36,7 +36,12 @@ export const ContentContainer = styled.div`
   margin-top: 30px;
 `
 
-export const TableContainer = styled.table`
+export const TableContainer = styled.div`
+  width: 100%;
+  overflow-x: auto;
+`
+
+export const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
 `
@@ -44,11 +49,25 @@ export const TableContainer = styled.table`
 export const TableHeader = styled.thead`
   background-color: #f4f5f7;
   border-radius: 4px 4px 0px 0px;
+  display: table;
+  width: 100%;
 `
 
-export const TableHeaderCell = styled.th`
+export const TableBody = styled.tbody`
+  display: block;
+  max-height: 300px;
+  overflow-y: auto;
+  width: 100%;
+`
+
+export const TableHeaderCell = styled.th<{ width: string }>`
   padding: 1rem;
   text-align: left;
+  position: sticky;
+  top: 0;
+  background: #f4f5f7;
+  z-index: 1;
+  width: ${({ width }) => width || 'auto'};
 
   &:last-child {
     text-align: center;
@@ -57,15 +76,14 @@ export const TableHeaderCell = styled.th`
 
 export const TableRow = styled.tr<{ isEven: boolean }>`
   background-color: ${props => (props.isEven ? 'white' : '#f4f5f7')};
+  display: table;
+  width: 100%;
 `
 
 export const TableCell = styled.td`
   padding: 1rem;
   text-align: left;
-
-  &:last-child {
-    text-align: center;
-  }
+  width: ${({ width }) => width || 'auto'};
 `
 
 export const TableActions = styled.div`

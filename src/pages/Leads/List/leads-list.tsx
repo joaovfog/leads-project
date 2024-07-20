@@ -7,7 +7,9 @@ import {
   FirstRowHeader,
   HeaderContainer,
   SecondRowHeader,
+  Table,
   TableActions,
+  TableBody,
   TableCell,
   TableContainer,
   TableHeader,
@@ -70,15 +72,19 @@ export const LeadsListPage = () => {
   }
 
   const handleDelete = async (lead: ILeads) => {
-    const confirmed = window.confirm(`Tem certeza que deseja excluir o lead ${lead.nome}?`)
+    const confirmed = window.confirm(
+      `Tem certeza que deseja excluir o lead ${lead.nome}?`
+    )
 
     if (confirmed) {
       try {
         await deleteLead(lead.id)
-  
+
         toast.success('Lead excluído com sucesso!')
-  
-        setLeads((prevLeads: any) => prevLeads.filter((l: any) => l.id !== lead.id))
+
+        setLeads((prevLeads: any[]) =>
+          prevLeads.filter((l) => l.id !== lead.id)
+        )
       } catch (error) {
         toast.error('Algo deu errado!')
       }
@@ -146,41 +152,43 @@ export const LeadsListPage = () => {
       <ContentContainer>
         <Card>
           <TableContainer>
-            <TableHeader>
-              <TableRow isEven={false}>
-                <TableHeaderCell>Nome</TableHeaderCell>
-                <TableHeaderCell>CPF</TableHeaderCell>
-                <TableHeaderCell>E-mail</TableHeaderCell>
-                <TableHeaderCell>Telefone</TableHeaderCell>
-                <TableHeaderCell>Ações</TableHeaderCell>
-              </TableRow>
-            </TableHeader>
-            <tbody>
-              {leads.map((lead, index) => (
-                <TableRow key={lead.id} isEven={index % 2 === 0}>
-                  <TableCell>{lead.nome}</TableCell>
-                  <TableCell>{formatCPF(lead.cpf)}</TableCell>
-                  <TableCell>{lead.email}</TableCell>
-                  <TableCell>
-                    {formatPhoneNumber(lead.telefone) || '-'}
-                  </TableCell>
-                  <TableCell>
-                    <TableActions>
-                      <Button
-                        icon={<MdOutlineEdit />}
-                        variant="tertiary"
-                        onClick={() => handleEdit(lead)}
-                      />
-                      <Button
-                        icon={<MdDeleteOutline />}
-                        variant="tertiary"
-                        onClick={() => handleDelete(lead)}
-                      />
-                    </TableActions>
-                  </TableCell>
+            <Table>
+              <TableHeader>
+                <TableRow isEven={false}>
+                  <TableHeaderCell width="25%">Nome</TableHeaderCell>
+                  <TableHeaderCell width="20%">CPF</TableHeaderCell>
+                  <TableHeaderCell width="25%">E-mail</TableHeaderCell>
+                  <TableHeaderCell width="20%">Telefone</TableHeaderCell>
+                  <TableHeaderCell width="10%">Ações</TableHeaderCell>
                 </TableRow>
-              ))}
-            </tbody>
+              </TableHeader>
+              <TableBody>
+                {leads.map((lead, index) => (
+                  <TableRow key={lead.id} isEven={index % 2 === 0}>
+                    <TableCell width="25%">{lead.nome}</TableCell>
+                    <TableCell width="20%">{formatCPF(lead.cpf)}</TableCell>
+                    <TableCell width="25%">{lead.email}</TableCell>
+                    <TableCell width="20%">
+                      {formatPhoneNumber(lead.telefone) || '-'}
+                    </TableCell>
+                    <TableCell width="10%">
+                      <TableActions>
+                        <Button
+                          icon={<MdOutlineEdit />}
+                          variant="tertiary"
+                          onClick={() => handleEdit(lead)}
+                        />
+                        <Button
+                          icon={<MdDeleteOutline />}
+                          variant="tertiary"
+                          onClick={() => handleDelete(lead)}
+                        />
+                      </TableActions>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </TableContainer>
         </Card>
       </ContentContainer>
