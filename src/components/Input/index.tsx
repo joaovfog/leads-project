@@ -39,8 +39,8 @@ export const Input: React.FC<InputProps> = ({
             value={value}
             onChange={onChange}
           >
-            {(inputProps: any) => (
-              <InputField {...inputProps} />
+            {(maskProps: React.InputHTMLAttributes<HTMLInputElement>) => (
+              <InputField {...maskProps} />
             )}
           </InputMask>
         ) : (

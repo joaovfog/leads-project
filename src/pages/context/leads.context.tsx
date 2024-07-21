@@ -61,10 +61,6 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({
 
   const [currentStep, setCurrentStep] = useState<number>(0)
 
-  const [page, setPage] = useState<number>(1)
-  const [totalPages, setTotalPages] = useState<number>(1)
-  const itemsPerPage = 5
-
   const [leadData, setLeadData] = useState<FormData>({
     cpf: '',
     nome: '',
@@ -74,7 +70,7 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({
     telefone: '',
   })
 
-  const fetchLeads = useCallback(async (page = 1, limit = itemsPerPage) => {
+  const fetchLeads = useCallback(async () => {
     setIsLoading(true)
 
     try {
