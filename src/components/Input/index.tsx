@@ -3,13 +3,13 @@ import InputMask from 'react-input-mask';
 import { InputField, Label, Container, InputFieldContainer } from './styles';
 
 type InputProps = React.ComponentProps<'input'> & {
-  label: string
-  placeholder: string
-  typeText: 'text' | 'number'
-  mask?: string
-  value: string
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
+  label: string;
+  placeholder?: string;
+  typeText: 'text' | 'number';
+  mask?: string;
+  value: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+};
 
 export const Input: React.FC<InputProps> = ({
   label,
@@ -25,7 +25,9 @@ export const Input: React.FC<InputProps> = ({
     id: label,
     placeholder,
     type: typeText,
-  }
+    value,
+    onChange
+  };
 
   return (
     <Container>
@@ -36,22 +38,17 @@ export const Input: React.FC<InputProps> = ({
             mask={mask}
             value={value}
             onChange={onChange}
-            {...inputProps}
           >
-            {(inputProps: React.InputHTMLAttributes<HTMLInputElement>) => (
+            {(inputProps: any) => (
               <InputField {...inputProps} />
             )}
           </InputMask>
         ) : (
           <InputFieldContainer>
-            <InputField
-              {...inputProps}
-              value={value}
-              onChange={onChange}
-            />
+            <InputField {...inputProps} />
           </InputFieldContainer>
         )}
       </div>
     </Container>
-  )
-}
+  );
+};
