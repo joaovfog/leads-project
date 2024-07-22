@@ -34,11 +34,11 @@ export const StepOneComponent = ({
           label="CPF"
           placeholder="Digite o CPF do cliente"
           mask="999.999.999-99"
-          id="cpf"
-          name="cpf"
           value={values.cpf}
           onChange={handleChange}
           onBlur={handleBlur}
+          id="cpf"
+          name="cpf"
         />
         {triedToAdvance && errors.cpf ? (
           <ErrorMessage>{errors.cpf}</ErrorMessage>

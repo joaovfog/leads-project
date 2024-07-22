@@ -22,7 +22,7 @@ import {
   StepTwo,
   Title,
 } from './styles'
-import { Form, Formik } from 'formik'
+import { Form, Formik, FormikHelpers } from 'formik'
 import { useCallback, useEffect, useState } from 'react'
 import { IMaritalStatus } from '../../../interfaces/IMaritalStatus'
 import { loadMaritalStatus } from '../../../services/Leads/useLoadMaritalStatus'
@@ -31,6 +31,7 @@ import * as Yup from 'yup'
 import { StepOneComponent } from './components/step-one'
 import { StepTwoComponent } from './components/step-two'
 import { useLeadsContext } from '../../context/leads.context'
+import { toast } from 'react-toastify'
 
 const validationSchemaStep1 = Yup.object().shape({
   cpf: Yup.string().required('CPF é obrigatório'),
@@ -262,9 +263,9 @@ export const RegisterLeadsPage = () => {
                           const error = await validateForm()
 
                           if (Object.keys(error).length === 0) {
-                            handleSubmit(values, validateForm)
+                            handleSubmit(values, {} as FormikHelpers<any>)
                           } else {
-                            console.log(`Erro no step: ${currentStep}`)
+                            console.log(errors)
                           }
                         }}
                       >

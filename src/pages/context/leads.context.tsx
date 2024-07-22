@@ -42,8 +42,11 @@ interface LeadsContextType {
   setCurrentStep: (step: number) => void
   leadData: FormData
   setLeadData: (data: FormData) => void
-  handleSubmit: (values: FormData, actions: any) => Promise<void>
-  fetchLeadById: any
+  handleSubmit: (
+    values: FormData,
+    actions: FormikHelpers<FormData>
+  ) => Promise<void>
+  fetchLeadById: (id: string) => Promise<void>
 }
 
 export const LeadsProvider: React.FC<LeadsProviderProps> = ({
@@ -54,13 +57,9 @@ export const LeadsProvider: React.FC<LeadsProviderProps> = ({
   const [leads, setLeads] = useState<ILeads[]>([])
   const [initLeads, setInitLeads] = useState<ILeads[]>([])
   const [selectedLead, setSelectedLead] = useState<ILeads | null>(null)
-
   const [error, setError] = useState<Error | null>(null)
-
   const [isLoading, setIsLoading] = useState<boolean>(false)
-
   const [currentStep, setCurrentStep] = useState<number>(0)
-
   const [leadData, setLeadData] = useState<FormData>({
     cpf: '',
     nome: '',
